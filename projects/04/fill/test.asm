@@ -16,12 +16,12 @@
 // define variables
 @16383
 D = A
-@screenStartAddr  //screenStart のアドレスは 16383
+@screenStartAddr
 M = D
 
 @24574
 D = A
-@screenEndAddr   //screenEnd のアドレスは 24575
+@screenEndAddr
 M = D
 
 @24576
