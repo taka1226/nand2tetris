@@ -1,0 +1,55 @@
+CHIP JumpOrInc {
+  IN instruction[3],
+     isEqual,
+     isNegative;
+  OUT out;
+
+  PARTS:
+  //common
+  Not(in=instruction[0], out=notInstruction0);
+  Not(in=instruction[1], out=notInstruction1);
+  Not(in=instruction[2], out=notInstruction2);
+  Not(in=isEqual, out=notIsEqual);
+  Not(in=isNegative, out=notIsNegative);
+
+  // if value > 0, then jump;
+  And5Way(a=notInstruction0, b=notInstruction1, c=instruction[2], d=notIsEqual, e=notIsNegative, out=temp1);
+
+  // if value = 0, then jump;
+  And5Way(a=notInstruction0, b=instruction[1], c=notInstruction2, d=isEqual, e=notIsNegative, out=temp2);
+
+  // if value = 0 or value > 0, then jump
+  And5Way(a=notInstruction0, b=instruction[1], c=instruction[2], d=isEqual, e=notIsNegative, out=temp3);
+  And5Way(a=notInstruction0, b=instruction[1], c=instruction[2], d=notIsEqual, e=notIsNegative, out=temp4);
+
+  // if value < 0, then jump
+  And5Way(a=instruction[0], b=notInstruction1, c=notInstruction2, d=notIsEqual, e=isNegative, out=temp5);
+
+  // if value is not equal to 0, then jump
+  And5Way(a=instruction[0], b=notInstruction1, c=instruction[2], d=notIsEqual, e=notIsNegative, out=temp6);
+  And5Way(a=instruction[0], b=notInstruction1, c=instruction[2], d=notIsEqual, e=isNegative, out=temp7);
+
+  // if value < 0 or value = 0, then jump
+  And5Way(a=instruction[0], b=instruction[1], c=notInstruction2, d=isEqual, e=notIsNegative, out=temp8);
+  And5Way(a=instruction[0], b=instruction[1], c=notInstruction2, d=notIsEqual, e=isNegative, out=temp9);
+
+  // no condition jump
+  And5Way(a=instruction[0], b=instruction[1], c=instruction[2], d=notIsEqual, e=notIsNegative, out=temp10);
+  And5Way(a=instruction[0], b=instruction[1], c=instruction[2], d=notIsEqual, e=isNegative, out=temp11);
+  And5Way(a=instruction[0], b=instruction[1], c=instruction[2], d=isEqual, e=notIsNegative, out=temp12);
+  And5Way(a=instruction[0], b=instruction[1], c=instruction[2], d=isEqual, e=isNegative, out=temp13);
+
+
+  Or(a=temp1, b=temp2, out=r1);
+  Or(a=r1, b=temp3, out=r2);
+  Or(a=r2, b=temp4, out=r3);
+  Or(a=r3, b=temp5, out=r4);
+  Or(a=r4, b=temp6, out=r5);
+  Or(a=r5, b=temp7, out=r6);
+  Or(a=r6, b=temp8, out=r7);
+  Or(a=r7, b=temp9, out=r8);
+  Or(a=r8, b=temp10, out=r9);
+  Or(a=r9, b=temp11, out=r10);
+  Or(a=r10, b=temp12, out=r11);
+  Or(a=r11, b=temp13, out=out);
+}

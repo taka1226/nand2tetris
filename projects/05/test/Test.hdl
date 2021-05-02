@@ -1,0 +1,7 @@
+CHIP Test {
+  IN in[16];
+  OUT out[16];
+  PARTS:
+  // common
+  Mux16(a[0..3]=0, a[4..5]=1, a[6..9]=0, a[10]=1, a[11..15]=0, b=in, sel=0, out=out);
+}
