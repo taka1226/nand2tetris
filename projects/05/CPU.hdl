@@ -41,46 +41,32 @@ CHIP CPU {
     // Put your code here:
 
     // decode the coming instructions
-    Mux16(a=true, b=instruction, sel=instruction[0], out=decodedInstruction);
-    // Mux16(a=0000110000100000, b=instruction, sel=instruction[0], out=decodedInstruction);
-
+    Mux16(a[0..4]=false, a[5]=true, a[6..9]=false, a[10..11]=true, a[12..15]=false, b=instruction, sel=instruction[15], out[0..2]=j, out[3]=writeM, out[4]=DLoad, out[5]=ALoad, out[6]=no, out[7]=f, out[8]=ny, out[9]=zy, out[10]=nx, out[11]=zx, out[12]=AorMSel, out[15]=optBit);
+    Mux16(a[0..4]=false, a[5]=true, a[6..9]=false, a[10..11]=true, a[12..15]=false, b=instruction, sel=instruction[15], out=i);
     //distinguish between A instruction and C instruction
-    Mux16(a=instruction, b=ALUoutput, sel=instruction[0], out=AInput);
+    Mux16(a=instruction, b=ALUoutput, sel=optBit, out=AInput);
 
     //register
-    Register(in=AInput, load=instruction[10], out=AOutput, out=addressM);  // A register
-    Register(in=ALUoutput, load=instruction[11], out=DOutput);  // D register
+    ARegister(in=AInput, load=ALoad, out=AOutput, out[0..14]=addressM);  // A register
+
+    DRegister(in=ALUoutput, load=DLoad, out=DOutput);  // D register
 
     // A or M Mux
-    Mux16(a=AOutput, b=inM, sel=instruction[3], out=AOrM);
+    Mux16(a=AOutput, b=inM, sel=AorMSel, out=AOrM);
 
     //ALU
-    ALU(x=DOutput, y=AOrM, zx=instruction[4], nx=instruction[5], zy=instruction[6], ny=instruction[7], f=instruction[8], no=instruction[9], out=ALUoutput, out=outM, zr=isEqual, ng=isNegative);  //zrは等号判定、ngは負判定
-
-    // writeM
-    DFF(in=instruction[12], out=writeM);
+    ALU(x=DOutput, y=AOrM, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=ALUoutput, out=outM, zr=isEqual, ng=isNegative);  //zrは等号判定、ngは負判定
 
 
-    // PCへのloadをinstruction[12..15], isEqual, isNegativeで作る
-    JumpOrInc(instruction=instruction[12..15], isEqual=isEqual, isNegative=isNegative, out=pcLoad);
+
+    // PCへのloadをinstruction[0..2], isEqual, isNegativeで作る
+    JumpOrInc(instruction=j, isEqual=isEqual, isNegative=isNegative, out=pcLoad);
+
 
     //PC
-    PC(in=AOutput, load=pcLoad, inc=true, reset=reset, out=pcTemp);   //loadはあとで作る
-    DFF(in=pcTemp[1], out=pc[1]);
-    DFF(in=pcTemp[2], out=pc[2]);
-    DFF(in=pcTemp[3], out=pc[3]);
-    DFF(in=pcTemp[4], out=pc[4]);
-    DFF(in=pcTemp[5], out=pc[5]);
-    DFF(in=pcTemp[6], out=pc[6]);
-    DFF(in=pcTemp[7], out=pc[7]);
-    DFF(in=pcTemp[8], out=pc[8]);
-    DFF(in=pcTemp[9], out=pc[9]);
-    DFF(in=pcTemp[10], out=pc[10]);
-    DFF(in=pcTemp[11], out=pc[11]);
-    DFF(in=pcTemp[12], out=pc[12]);
-    DFF(in=pcTemp[13], out=pc[13]);
-    DFF(in=pcTemp[14], out=pc[14]);
-    DFF(in=pcTemp[15], out=pc[15]);
+    PC(in=AOutput, load=pcLoad, inc=true, reset=reset, out[0..14]=pc);   //loadはあとで作る
+
+
 
 
 }

@@ -1,8 +1,0 @@
-CHIP Test {
-  IN in[16];
-  OUT out[16];
-  PoutRTS:
-  // common
-  Not16(in[0..3]=false, in[4..5]=true, in[6..9]=false, in[10]=true, in[11..15]=false, out=out);
-  //outnd16(out[0..7]=foutlse, out[8..15]=true, b=in, out=out);
-}
