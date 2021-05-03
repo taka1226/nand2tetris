@@ -28,9 +28,33 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
-    RAM16K(in=in, load=, address=address[0..13], out=);
-    Screen(in=in, load=, address=address[0..12], out=);
+    DMux(in=load, sel=address[14], a=a, b=b);  //16Kとそれ以外
+    DMux(in=b, sel=address[13], a=b1, b=b2);   //8Kとそれ以外
 
-    //0..12 までがすべて0のときだけkeyboardに
-    Keyboard(in=in, load=, out=);
+    Or(a=address[0], b=address[1], out=temp1);
+    Or(a=temp1, b=address[2], out=temp2);
+    Or(a=temp2, b=address[3], out=temp3);
+    Or(a=temp3, b=address[4], out=temp4);
+    Or(a=temp4, b=address[5], out=temp5);
+    Or(a=temp5, b=address[6], out=temp6);
+    Or(a=temp6, b=address[7], out=temp7);
+    Or(a=temp7, b=address[8], out=temp8);
+    Or(a=temp8, b=address[9], out=temp9);
+    Or(a=temp9, b=address[10], out=temp10);
+    Or(a=temp10, b=address[11], out=temp11);
+    Or(a=temp11, b=address[12], out=temp12);
+    Not(in=temp12, out=isAllZero);
+
+    DMux(in=b2, sel=isAllZero, a=c, b=d);
+
+    RAM16K(in=in, load=a, address=address[0..13], out=r1);
+    Screen(in=in, load=b1, address=address[0..12], out=r2);
+    Keyboard(out=keyboardOut);
+    Register(in=keyboardOut, load=d, out=r3);
+
+    And(a=isAllZero, b=address[13], out=isKeyboard);
+
+    //out
+    Mux16(a=r2, b=r3, sel=isKeyboard, out=t1);
+    Mux16(a=r1, b=t1, sel=address[14], out=out);
 }
