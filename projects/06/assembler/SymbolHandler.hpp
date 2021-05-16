@@ -25,7 +25,8 @@ struct SymbolHandler {
   }
 
   boolean contains(){
-
+      boolean isExist = (SymbolTable.count(key) > 0);
+      return isExist;
   }
 
   int getAddress(std::string key){

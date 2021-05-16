@@ -16,14 +16,8 @@ struct Parser {
     dest = "NULL";
     comp = "NULL";
     jump = "NULL";
-    if (lineContent[0] == '@'){
-      instructionType = "A"; //A instruction
-      aParse();
-    }else{
-      instructionType = "C"; //C instruction
-      cParse();
-    }
   }
+
   void aParse(){
     if (instructionType == "C") return;
     addr = lineContent.substr(1);
@@ -57,6 +51,19 @@ struct Parser {
     }
   }
 
+  void labelIntoAddr(std::string labelName, SymbolHandler symbolHandler){
+      addr_int = symbolHandler.getAddress();  //int type
+      addr =  addr_int + '\0'; //change int type to string type
+  }
+
+  bool check_int(std::string str)　//文字列が数字かどうかをチェック
+  {
+      if (std::all_of(str.cbegin(), str.cend(), isdigit))
+      {
+          return true;
+      }
+      return false;
+  }
 
 
 };
