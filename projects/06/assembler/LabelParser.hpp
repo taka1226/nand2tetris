@@ -1,8 +1,10 @@
 struct LabelParser {
     std::string labelName;
+    std::string lineContent;
     int addr;
 
     LabelParser(std::string line, int lineNum){
+        lineContent = line;
         if (lineContent[0] == '('){
             addr = lineNum;
             getLabel();
@@ -24,4 +26,4 @@ struct LabelParser {
     }
 
 
-}
+};

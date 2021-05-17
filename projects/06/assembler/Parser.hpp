@@ -52,11 +52,11 @@ struct Parser {
   }
 
   void labelIntoAddr(std::string labelName, SymbolHandler symbolHandler){
-      addr_int = symbolHandler.getAddress();  //int type
+      int addr_int = symbolHandler.getAddress(labelName);  //int type
       addr =  addr_int + '\0'; //change int type to string type
   }
 
-  bool check_int(std::string str)　//文字列が数字かどうかをチェック
+  bool check_int(std::string str)//文字列が数字かどうかをチェック
   {
       if (std::all_of(str.cbegin(), str.cend(), isdigit))
       {

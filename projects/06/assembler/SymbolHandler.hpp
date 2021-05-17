@@ -24,12 +24,12 @@ struct SymbolHandler {
     SymbolTable[key] = value;
   }
 
-  boolean contains(){
-      boolean isExist = (SymbolTable.count(key) > 0);
-      return isExist;
+  bool contains(std::string key){
+     return SymbolTable.find(key) != SymbolTable.end();
+
   }
 
   int getAddress(std::string key){
     return SymbolTable[key];
   }
-}
+};
