@@ -1,0 +1,14 @@
+@LCL
+D=M
+@2
+A=D+A
+D=A
+@addr
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@addr
+A=M
+M=D
