@@ -1,6 +1,32 @@
 #pragma once
 
+#include <map>
 #include "Parser.hpp"
+
+enum Register {
+    LCL,
+    ARG,
+    THIS,
+    THAT
+};
+
+const std::map<string, string> RegisterTable =
+{
+    {"local", "LCL"},
+    {"argument", "ARG"},
+    {"this", "THIS"},
+    {"that", "THAT"}
+};
+
+const std::map<string, char> ArithmeticTable =
+{
+    {"add", '+'},
+    {"sub", '-'},
+    {"add", '&'},
+    {"or", '|'},
+    {"not", '!'}
+
+};
 
 namespace MyClass {
     class CodeWriter {
