@@ -2,12 +2,53 @@
 #include "Parser.hpp"
 
 MyClass::CodeWriter::CodeWriter(string vm_filename, VmCodeInfo vm_code_info)
-    : vm_filename_{vm_filename}, vm_code_info_{vm_code_info}
+    : vm_filename_{vm_filename}, vm_code_info_{vm_code_info}, label_num_{0};
 
-//eq gt lt はまったく別の挙動をさせる label を使ってそこにjump させるようにする
+//vm ファイルから新しいファイル名(asm) を作る
+// void MyClass::CodeWriter::SetFileName(){
+//
+// }
+
+
+//eq gt lt はまったく別の挙動をさせる LABEL を使ってそこにjump させるようにする
 //残項目は neg, eq, gt, lt
 void MyClass::CodeWriter::WriteArithmetic(){
     string arithmetic = vm_code_info_.arg1;
+    if (arithmetic == "eq" || arithmetic == "lt" || arithmetic == "gt"){
+        string cmp_com = cmpTable[arithmetic];
+        /** サンプル
+        * push 10
+        * push 3
+        * lt
+        */
+        printf("@SP");
+        printf("A=M-1");
+        printf("D=M"); //スタックから3を取得
+        printf("@SP");
+        printf("A=M-1");
+        printf("D=M-D"); //スタックから10を取得, 10 - 3
+        printf("@LABEL%d", label_num_);
+        int jmp_true_label_num = label_num_;
+        label_num_++;
+        printf("D;JEQ")
+        printf("@SP");
+        printf("A=M");
+        printf("M=0");
+        printf("@LABEL%d", label_num_);
+        int jmp_false_label_num = label_num_;
+        label_num_++;
+        cout << "0;" << cmp_com << endl;
+        printf("(LABEL%d)", jmp_true_label_num);
+        printf("  @SP");
+        printf("  A=M");
+        printf("  M=-1");
+        printf("(LABEL%d)", jmp_falselabel_num);
+        printf("  @SP");
+        printf("  M=M+1");
+        return;
+    }
+
+
     char ope = ArithmeticTable[arithmetic];
     /** サンプル
     * push 10
@@ -25,6 +66,8 @@ void MyClass::CodeWriter::WriteArithmetic(){
     printf("M=D"); //スタックに戻す
     printf("@SP");
     printf("M=M+1"); //スタックをインクリメント
+
+    return;
 }
 
 
