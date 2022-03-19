@@ -3,10 +3,11 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iostream>
 
-namespace {
+namespace MyLibrary{
     // 空白で区切る
-    std::vector<std::string> split(const std::string& src, const char* delim = " ") {
+    std::vector<std::string> split(const std::string& src, const char* delim) {
         std::vector<std::string> vec;
         std::string::size_type len = src.length();
 
@@ -55,16 +56,23 @@ namespace MyClass {
         getline(vm_file_, line_);
     }
 
+
     void Parser::setLine(std::string line){
         line_ = line;
     }
 
     void Parser::parse(VmCodeInfo& vm_code_info){
-        std::vector splited_vec = split(line_);
+        if (line_.substr(0, 2) == "//"){ //コメントのところはc_comment
+            vm_code_info.command_type = C_COMMENT;
+            return;
+        }
+
+        std::vector splited_vec = MyLibrary::split(line_);
         for (auto& word : splited_vec){
-            deleteNl2(word);
+            MyLibrary::deleteNl2(word);
         }
         if (splited_vec.size() >= 4){
+            std::cout << line_ << std::endl;
             printf("wrong command!\n");
             return;
         }

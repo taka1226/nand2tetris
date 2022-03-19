@@ -2,11 +2,13 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 
 enum CommandType {
     C_ARITHMETIC,
     C_PUSH,
     C_POP,
+    C_COMMENT,
 };
 
 //vmcode の一行の情報
@@ -15,6 +17,12 @@ struct VmCodeInfo {
     std::string arg1; //C_ARITHMETIC の場合はコマンド、push pop の場合はセグメント名
     int arg2;
 };
+
+namespace MyLibrary{
+    std::vector<std::string> split(const std::string& src, const char* delim = " ");
+
+    void deleteNl2(std::string &targetStr);
+}
 
 namespace MyClass {
     class Parser {

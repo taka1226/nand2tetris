@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include "Parser.hpp"
 
 enum Register {
@@ -10,41 +11,17 @@ enum Register {
     THAT
 };
 
-const std::map<string, string> RegisterTable =
-{
-    {"local", "LCL"},
-    {"argument", "ARG"},
-    {"this", "THIS"},
-    {"that", "THAT"}
-};
-
-const std::map<string, char> ArithmeticTable =
-{
-    {"add", '+'},
-    {"sub", '-'},
-    {"add", '&'},
-    {"or", '|'},
-    {"not", '!'}
-};
-
-const std::map<string, string> cmpTable =
-{
-    {"eq", "JEQ"},
-    {"lt", "JLT"},
-    {"GT", "JGT"}
-};
 
 namespace MyClass {
     class CodeWriter {
     public:
-        CodeWriter(string vm_filename, VmCodeInfo vm_code_info);
-        //void SetFileName(); //書き込むファイルの名前を設定する
-        void WriteArithmetic(); //算術コマンドをアセンブリに変換する
-        void WritePushPop(); //push, pop コマンドをアセンブリに変換する
+        CodeWriter(std::string vm_filename); //書き込むファイルの名前を設定する
+        void Write(VmCodeInfo vm_code_info);
+        void WriteArithmetic(VmCodeInfo vm_code_info); //算術コマンドをアセンブリに変換する
+        void WritePushPop(VmCodeInfo vm_code_info); //push, pop コマンドをアセンブリに変換する
         //void Write();
     private:
-        string vm_filename_;
-        VmCodeInfo vm_code_info_;
+        std::string output_filename_;
         int label_num_; //次使われるlabel ナンバーを保存しておく //スタックとおなじ感じ？
-    }
+    };
 }
