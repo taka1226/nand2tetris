@@ -53,6 +53,7 @@ namespace MyClass {
 
 
     void Parser::advance(){
+        std::cout << line_ << std::endl;
         getline(vm_file_, line_);
     }
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <string>
 
 std::map<std::string, std::string> RegisterTable =
 {
@@ -10,7 +11,7 @@ std::map<std::string, std::string> RegisterTable =
     {"argument", "ARG"},
     {"this", "THIS"},
     {"that", "THAT"},
-    {"temp", "TEMP"},
+    {"temp", "R5"},
 };
 
 std::map<std::string, char> ArithmeticTable =
@@ -32,7 +33,8 @@ std::map<std::string, std::string> cmpTable =
 namespace MyClass {
     CodeWriter::CodeWriter(std::string vm_filename){
         std::vector<std::string> splited_vec = MyLibrary::split(vm_filename, (const char*)".");
-        output_filename_ = splited_vec[0] + ".asm";
+        base_filename_ = splited_vec[0];
+        output_filename_ = base_filename_ + ".asm";
         label_num_ = 0;
     }
 
@@ -122,29 +124,68 @@ namespace MyClass {
             return;
         }
 
-        if (RegisterTable.find(vm_code_info.arg1) == RegisterTable.end()){ //見つからなければ
-            std::cout << vm_code_info.arg1 << " is not implemented" << std::endl;
-            return;
+        std::string reg;
+        if (RegisterTable.find(vm_code_info.arg1) != RegisterTable.end()){
+            reg = RegisterTable[vm_code_info.arg1];
         }
 
-        std::string reg = RegisterTable[vm_code_info.arg1];
+        if (vm_code_info.arg1 == "pointer"){ //pointer
+            if (vm_code_info.arg2 == 0){
+                reg = "THIS";
+            }else if (vm_code_info.arg2 == 1){
+                reg = "THAT";
+            }
+        }
+
         int memory_location = vm_code_info.arg2;
         if (vm_code_info.command_type == C_PUSH){
-            std::cout << "@" << reg << std::endl; //needs to be fixed
-            printf("A=M+%d\n", memory_location); //needs to be fixed
+            if (vm_code_info.arg1 == "constant"){ //constant なら
+                printf("@SP\n");
+                printf("A=M\n");
+                printf("M=%d\n", vm_code_info.arg2);
+                printf("@SP\n");
+                printf("M=M+1\n");
+                return;
+            }
+
+            if (vm_code_info.arg1 == "static"){
+                std::cout << "@" << base_filename_ << "." << vm_code_info.arg2 << std::endl;
+                printf("A=M\n");
+            }else if (vm_code_info.arg1 == "pointer"){
+                std::cout << "@" << reg << std::endl;
+                printf("A=M\n");
+            }else{
+                std::cout << "@" << reg << std::endl; //needs to be fixed
+                printf("A=M+%d\n", memory_location); //needs to be fixed
+            }
+
             printf("D=M\n");  //値を取得
             printf("@SP\n");
             printf("A=M\n");
             printf("M=D\n");
             printf("@SP\n");
             printf("M=M+1\n");
+
         }else if (vm_code_info.command_type == C_POP){
+            if (vm_code_info.arg1 == "constant"){ //constant なら
+                printf("pop is not allowed\n");
+                return;
+            }
+
             printf("@SP\n");
             printf("M=M-1\n");
             printf("A=M\n");
             printf("D=M\n"); //stack をデクリメントして値を取得
-            std::cout << "@" << reg << std::endl; //needs to be fixed
-            printf("A=M+%d\n", memory_location);  //needs to be fixed
+            if (vm_code_info.arg1 == "static"){
+                std::cout << "@" << base_filename_ << "." << vm_code_info.arg2 << std::endl;
+                printf("A=M\n");
+            }else if (vm_code_info.arg1 == "pointer"){
+                std::cout << "@" << reg << std::endl;
+                printf("A=M\n");
+            }else{
+                std::cout << "@" << reg << std::endl;
+                printf("A=M+%d\n", memory_location);
+            }
             printf("M=D\n");
         }
 

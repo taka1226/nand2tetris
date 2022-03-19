@@ -21,7 +21,9 @@ int main(int argc, char* argv[]){
         VmCodeInfo vm_code_info;
         parser.advance();
         parser.parse(vm_code_info); //vm_code_info がパースされた
+        printf("------------------------------\n");
         code_writer.Write(vm_code_info);
+        printf("------------------------------\n");
     }
     while ( !parser.hasMoreLines() );
 

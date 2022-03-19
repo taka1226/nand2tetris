@@ -19,9 +19,10 @@ namespace MyClass {
         void Write(VmCodeInfo vm_code_info);
         void WriteArithmetic(VmCodeInfo vm_code_info); //算術コマンドをアセンブリに変換する
         void WritePushPop(VmCodeInfo vm_code_info); //push, pop コマンドをアセンブリに変換する
-        //void Write();
+
     private:
         std::string output_filename_;
+        std::string base_filename_;
         int label_num_; //次使われるlabel ナンバーを保存しておく //スタックとおなじ感じ？
     };
 }
