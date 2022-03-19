@@ -20,12 +20,12 @@ int main(int argc, char* argv[]){
     do{
         VmCodeInfo vm_code_info;
         parser.advance();
+        if (!parser.hasMoreLines()) return 0;
+
         parser.parse(vm_code_info); //vm_code_info がパースされた
-        printf("------------------------------\n");
         code_writer.Write(vm_code_info);
-        printf("------------------------------\n");
     }
-    while ( !parser.hasMoreLines() );
+    while ( parser.hasMoreLines() );
 
 
     return 0;

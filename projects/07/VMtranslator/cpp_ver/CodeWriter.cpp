@@ -18,9 +18,8 @@ std::map<std::string, char> ArithmeticTable =
 {
     {"add", '+'},
     {"sub", '-'},
-    {"add", '&'},
+    {"and", '&'},
     {"or", '|'},
-    {"not", '!'}
 };
 
 std::map<std::string, std::string> cmpTable =
@@ -63,10 +62,12 @@ namespace MyClass {
             * lt
             */
             printf("@SP\n");
-            printf("A=M-1\n");
+            printf("M=M-1\n");
+            printf("A=M\n");
             printf("D=M\n"); //スタックから3を取得
             printf("@SP\n");
-            printf("A=M-1\n");
+            printf("M=M-1\n");
+            printf("A=M\n");
             printf("D=M-D\n"); //スタックから10を取得, 10 - 3
             printf("@LABEL%d\n", label_num_);
             int jmp_true_label_num = label_num_;
@@ -98,15 +99,31 @@ namespace MyClass {
         */
         if (arithmetic == "neg"){ //neg ならば -にするだけ
             printf("@SP\n");
-            printf("A=M-1\n");
+            printf("M=M-1\n");
+            printf("A=M\n");
             printf("M=-M\n"); //マイナスにして入れるだけ
+            printf("@SP\n");
+            printf("M=M+1\n");
             return;
         }
+
+        if (arithmetic == "not"){
+            printf("@SP\n");
+            printf("M=M-1\n");
+            printf("A=M\n");
+            printf("M=!M\n"); //notにして入れるだけ
+            printf("@SP\n");
+            printf("M=M+1\n");
+            return;
+        }
+
         printf("@SP\n");
-        printf("A=M-1\n");
+        printf("M=M-1\n");
+        printf("A=M\n");
         printf("D=M\n"); //スタックから3を取得
         printf("@SP\n");
-        printf("A=M-1\n");
+        printf("M=M-1\n");
+        printf("A=M\n");
         printf("D=M%cD\n", ope); //10 - 3
         printf("@SP\n");
         printf("A=M\n");
@@ -140,31 +157,51 @@ namespace MyClass {
         int memory_location = vm_code_info.arg2;
         if (vm_code_info.command_type == C_PUSH){
             if (vm_code_info.arg1 == "constant"){ //constant なら
+                printf("@%d\n", vm_code_info.arg2);
+                printf("D=A\n");
                 printf("@SP\n");
                 printf("A=M\n");
-                printf("M=%d\n", vm_code_info.arg2);
+                printf("M=D\n");
                 printf("@SP\n");
                 printf("M=M+1\n");
                 return;
-            }
 
-            if (vm_code_info.arg1 == "static"){
-                std::cout << "@" << base_filename_ << "." << vm_code_info.arg2 << std::endl;
+            }else if (vm_code_info.arg1 == "static"){
+                std::cout << "@" << base_filename_ << "." << memory_location << std::endl;
+                printf("D=M\n");
+                printf("@SP\n");
                 printf("A=M\n");
+                printf("M=D\n");
+                printf("@SP\n");
+                printf("M=M+1\n");
+                return;
+
             }else if (vm_code_info.arg1 == "pointer"){
                 std::cout << "@" << reg << std::endl;
                 printf("A=M\n");
+                printf("D=M\n");
+                printf("@SP\n");
+                printf("A=M\n");
+                printf("M=D\n");
+                printf("@SP\n");
+                printf("M=M+1\n");
+                return;
+
             }else{
-                std::cout << "@" << reg << std::endl; //needs to be fixed
-                printf("A=M+%d\n", memory_location); //needs to be fixed
+                std::cout << "@" << reg << std::endl;
+                printf("D=M\n");
+                printf("@%d\n", memory_location);
+                printf("A=D+A\n");
+                printf("D=M\n");
+                printf("@SP\n");
+                printf("A=M\n");
+                printf("M=D\n");
+                printf("@SP\n");
+                printf("M=M+1\n");
+
+                return;
             }
 
-            printf("D=M\n");  //値を取得
-            printf("@SP\n");
-            printf("A=M\n");
-            printf("M=D\n");
-            printf("@SP\n");
-            printf("M=M+1\n");
 
         }else if (vm_code_info.command_type == C_POP){
             if (vm_code_info.arg1 == "constant"){ //constant なら
@@ -172,21 +209,42 @@ namespace MyClass {
                 return;
             }
 
-            printf("@SP\n");
-            printf("M=M-1\n");
-            printf("A=M\n");
-            printf("D=M\n"); //stack をデクリメントして値を取得
             if (vm_code_info.arg1 == "static"){
-                std::cout << "@" << base_filename_ << "." << vm_code_info.arg2 << std::endl;
+                printf("@SP\n");
+                printf("M=M-1\n");
                 printf("A=M\n");
+                printf("D=M\n");
+                std::cout << "@" << base_filename_ << "." << memory_location << std::endl;
+                printf("M=D\n");
+                return;
+
             }else if (vm_code_info.arg1 == "pointer"){
+                printf("@SP\n");
+                printf("M=M-1\n");
+                printf("A=M\n");
+                printf("D=M\n");
                 std::cout << "@" << reg << std::endl;
                 printf("A=M\n");
+                printf("M=D\n");
+                return;
+
             }else{
                 std::cout << "@" << reg << std::endl;
-                printf("A=M+%d\n", memory_location);
+                printf("D=M\n");
+                printf("@%d\n", memory_location);
+                printf("A=D+A\n");
+                printf("D=A\n");
+                printf("@addr\n");
+                printf("M=D\n");
+                printf("@SP\n");
+                printf("M=M-1\n");
+                printf("A=M\n");
+                printf("D=M\n");
+                printf("@addr\n");
+                printf("A=M\n");
+                printf("M=D\n");
+                return;
             }
-            printf("M=D\n");
         }
 
     }

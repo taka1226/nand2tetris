@@ -48,12 +48,11 @@ namespace MyClass {
     }
 
     bool Parser::hasMoreLines(){
-        return vm_file_.eof();
+        return !vm_file_.eof();
     }
 
 
     void Parser::advance(){
-        std::cout << line_ << std::endl;
         getline(vm_file_, line_);
     }
 
