@@ -2,19 +2,18 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-int main(){
-    // std::ifstream* vm_file_;
-    //
-    // ifstream vm_file("example.txt");
-    //
-    // vm_file_ = &vm_file;
-    // //ifstream vm_file_(vm_filename.c_str());
-    //
-    // std::string line;
-    //
-    // getline(*vm_file_, line);
+#include "../Parser.hpp"
 
-    printf("A=%c", 'e');
+using namespace std;
+
+int main(){
+    //string s = "./example.txt";
+    //Parser parser(s);
+
+    MyClass::Parser parser("./example.txt");
+    parser.setLine("pop local 3 4");
+    VmCodeInfo* s = parser.parse();
+
+    cout << (s == nullptr) << endl;
     return 0;
 }

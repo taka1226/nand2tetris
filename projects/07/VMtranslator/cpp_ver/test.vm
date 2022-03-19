@@ -1,0 +1,3 @@
+push local 1
+push temp 2
+add

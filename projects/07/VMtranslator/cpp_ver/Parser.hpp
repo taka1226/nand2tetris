@@ -19,13 +19,17 @@ struct VmCodeInfo {
 namespace MyClass {
     class Parser {
     public:
-        Parser(std::string& vm_filename); //constructor
+        Parser(std::string vm_filename); //constructor
+        ~Parser();
         bool hasMoreLines();  //まだ命令が残っているかどうか
         void advance(); //Vm ファイルから一行を読み取る
-        VmCodeInfo parse(); //パースする
+        void parse(VmCodeInfo& vm_code_info); //パースする
+
+        //テスト用
+        void setLine(std::string line);
 
     private:
-        std::ifstream* vm_file_;
+        std::ifstream vm_file_;
         std::string line_; //vmCode 1行
     };
 }

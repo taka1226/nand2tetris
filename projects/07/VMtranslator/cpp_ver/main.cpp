@@ -2,12 +2,13 @@
 #include "Parser.hpp"
 
 int main(){
-    Parser parser("./file/test.vm");
+    MyClass::Parser parser("test.vm");
 
     do{
+        VmCodeInfo vm_code_info;
         parser.advance();
-        VmCodeInfo vm = parser.parse();
-
+        parser.parse(vm_code_info);
+        std::cout << &vm_code_info << std::endl;
     }
     while ( !parser.hasMoreLines() );
 
