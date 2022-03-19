@@ -37,7 +37,7 @@ namespace {
 }
 
 namespace MyClass {
-    //コンストラクタ
+    //ctor
     Parser::Parser(std::string vm_filename){
         vm_file_.open(vm_filename);
     }
