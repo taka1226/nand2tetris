@@ -1,3 +1,3 @@
 ## 開発メモ
-- アセンブリはファイルに出力できるようにしたい。デバッグ情報は標準出力に垂れ流す
-- `pop local 0             // sum = sum + counter`   などのコードからコメントを除去する処理を書く必要がある。(メソッドを用意する removeComment)
+- call, function, return コマンドの実装
+- `cp main ../FunctionCalls/FibonacciElement/`

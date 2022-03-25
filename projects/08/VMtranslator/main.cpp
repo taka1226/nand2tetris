@@ -3,10 +3,7 @@
 #include "CodeWriter.hpp"
 
 extern std::map<std::string, std::string> RegisterTable;
-
-
 extern std::map<std::string, char> ArithmeticTable;
-
 extern std::map<std::string, std::string> cmpTable;
 
 
