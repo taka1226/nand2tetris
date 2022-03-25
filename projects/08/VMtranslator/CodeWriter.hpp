@@ -1,8 +1,11 @@
 #pragma once
 
-#include <map>
-#include <string>
 #include "Parser.hpp"
+#include <string>
+#include <vector>
+#include <iostream>
+#include <map>
+#include <fstream>
 
 enum Register {
     LCL,
@@ -16,6 +19,7 @@ namespace MyClass {
     class CodeWriter {
     public:
         CodeWriter(std::string vm_filename); //書き込むファイルの名前を設定する
+        ~CodeWriter();
         void Write(VmCodeInfo vm_code_info);
         void WriteArithmetic(VmCodeInfo vm_code_info); //算術コマンドをアセンブリに変換する
         void WritePushPop(VmCodeInfo vm_code_info); //push, pop コマンドをアセンブリに変換する
@@ -24,8 +28,8 @@ namespace MyClass {
         void WriteIf(VmCodeInfo vm_code_info);
 
     private:
-        std::string output_filename_;
         std::string base_filename_;
+        std::ofstream asm_file_;
         int label_num_; //次使われるlabel ナンバーを保存しておく //スタックとおなじ感じ？
     };
 }

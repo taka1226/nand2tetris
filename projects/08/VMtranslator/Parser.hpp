@@ -1,8 +1,11 @@
 #pragma once
 
+#include "MyLibrary.hpp"
+#include <vector>
 #include <string>
 #include <fstream>
-#include <vector>
+#include <sstream>
+#include <iostream>
 
 enum CommandType {
     C_ARITHMETIC,
@@ -21,11 +24,6 @@ struct VmCodeInfo {
     int arg2;
 };
 
-namespace MyLibrary{
-    std::vector<std::string> split(const std::string& src, const char* delim = " ");
-
-    void deleteNl2(std::string &targetStr);
-}
 
 namespace MyClass {
     class Parser {
@@ -35,12 +33,11 @@ namespace MyClass {
         bool hasMoreLines();  //まだ命令が残っているかどうか
         void advance(); //Vm ファイルから一行を読み取る
         void parse(VmCodeInfo& vm_code_info); //パースする
-
-        //テスト用
-        void setLine(std::string line);
+        bool isSkip();
 
     private:
         std::ifstream vm_file_;
         std::string line_; //vmCode 1行
+        bool skip_;
     };
 }

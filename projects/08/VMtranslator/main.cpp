@@ -23,7 +23,11 @@ int main(int argc, char* argv[]){
         if (!parser.hasMoreLines()) return 0;
 
         parser.parse(vm_code_info); //vm_code_info がパースされた
-        code_writer.Write(vm_code_info);
+
+        if (!parser.isSkip()){
+            code_writer.Write(vm_code_info);
+        }
+
     }
     while ( parser.hasMoreLines() );
 
