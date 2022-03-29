@@ -83,13 +83,13 @@ namespace MyClass {
         }
         if (cmd == "function"){
             vm_code_info.command_type = C_FUNCTION;
-            vm_code_info.arg1 = splited_vec[1];
+            vm_code_info.arg1 = splited_vec[1]; //function name
             std::istringstream ss = std::istringstream(splited_vec[2]);
             ss >> vm_code_info.arg2;
         }
         if (cmd == "call"){
             vm_code_info.command_type = C_CALL;
-            vm_code_info.arg1 = splited_vec[1];
+            vm_code_info.arg1 = splited_vec[1];  //function name
             std::istringstream ss = std::istringstream(splited_vec[2]);
             ss >> vm_code_info.arg2;
         }

@@ -294,4 +294,100 @@ namespace MyClass {
         asm_file_ <<"D;JMP" << std::endl;
     }
 
+
+    void CodeWriter::WriteFunction(VmCodeInfo vm_code_info){
+        if (vm_code_info.command_type != C_FUNCTION){
+            printf("only function is allowed");
+            return;
+        }
+
+        std::string function_name = vm_code_info.arg1;
+        int local_variables_num = vm_code_info.arg2;
+
+        asm_file_ << "(" << function_name << ")" << std::endl;
+        for (int i=0;i<local_variables_num;i++){  //local variables の数だけ push する
+            asm_file_ << "@0" << std::endl;
+            asm_file_ << "D=A" << std::endl;
+            asm_file_ << "@SP" << std::endl;
+            asm_file_ << "A=M" << std::endl;
+            asm_file_ << "M=D" << std::endl;
+            asm_file_ << "@SP" << std::endl;
+            asm_file_ << "M=M+1" << std::endl;
+        }
+
+        return;
+    }
+
+    void CodeWriter::WriteCall(VmCodeInfo vm_code_info){
+        if (vm_code_info.command_type != C_CALL){
+            printf("only call is allowed");
+            return;
+        }
+
+        std::string function_name = vm_code_info.arg1;
+        int args_num = vm_code_info.arg2;
+
+        asm_file_ << "@RetAddr_" << function_name << std::endl;  //return address を push
+        asm_file_ << "D=A" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "A=M" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "M=M+1" << std::endl;
+
+        asm_file_ << "@LCL" << std::endl;  //lcl
+        asm_file_ << "D=A" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "A=M" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "M=M+1" << std::endl;
+
+        asm_file_ << "@ARG" << std::endl;  //arg
+        asm_file_ << "D=A" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "A=M" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "M=M+1" << std::endl;
+
+        asm_file_ << "@THIS" << std::endl;  //this
+        asm_file_ << "D=A" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "A=M" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "M=M+1" << std::endl;
+
+        asm_file_ << "@THAT" << std::endl;  //that
+        asm_file_ << "D=A" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "A=M" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "M=M+1" << std::endl;
+
+        //arg = sp - 5 - nargs
+        asm_file_ << "@5" << std::endl;
+        asm_file_ << "D=A" << std::endl;
+        asm_file_ << "@" << args_num << std::endl;
+        asm_file_ << "D=D+A" << std::endl;  // D = 5 + args_num
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "D=M-D" << std::endl;  // D = sp - D
+        asm_file_ << "@ARG" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+
+        //lcl = sp
+        asm_file_ << "@SP" << std::endl;
+        asm_file_ << "D=M" << std::endl;
+        asm_file_ << "@LCL" << std::endl;
+        asm_file_ << "M=D" << std::endl;
+
+        //goto function_name
+        asm_file_ << "@" << function_name << std::endl;
+        asm_file_ << "0;JMP" << std::endl;
+
+        // (return address)
+        asm_file_ << "(RetAddr_" << function_name << ")" << std::endl;
+    }
 }

@@ -26,6 +26,8 @@ namespace MyClass {
         void WriteLabel(VmCodeInfo vm_code_info);
         void WriteGoto(VmCodeInfo vm_code_info);
         void WriteIf(VmCodeInfo vm_code_info);
+        void WriteFunction(VmCodeInfo vm_code_info);
+        void WriteCall(VmCodeInfo vm_code_info);
 
     private:
         std::string base_filename_;
